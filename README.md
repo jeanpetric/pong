@@ -1,5 +1,4 @@
-# Pong
-A very basic pong game
+# Basic pong
 
 A simple toy game developed in SDL.
 
