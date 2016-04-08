@@ -1,7 +1,7 @@
 /*
 	A simple toy game developed in SDL.
 	Author: Jean Petric, University of Hertfordshire
-	Compile: g++ --std=c++11 pong.cpp `pkg-config --cflags --libs sdl2` -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+	Compile: g++ --std=c++11 pong.cpp `pkg-config --cflags --libs sdl2` -lSDL2 -lSDL2_image
 */
 #include <SDL.h>
 #include <SDL_image.h>
@@ -30,17 +30,23 @@ void Close() {
 class GameCharacter {
 protected:
 	std::string m_name;
+	SDL_Rect m_characterDescription;
 	int m_velocity, m_directionX, m_directionY;
 	SDL_Texture *m_character;
-	SDL_Rect m_characterDescription;
 	void m_LoadCharacter(const char *file) {
 		m_character = IMG_LoadTexture(renderer, file);
 	}
 public:
-	GameCharacter() {
-		m_characterDescription.x = m_characterDescription.y = 0;
+	GameCharacter(const char *file, const char *name, int width, int height, int x, int y) {
+		m_characterDescription.w = width;
+		m_characterDescription.h = height;
+		m_characterDescription.x = x;
+		m_characterDescription.y = y;
 		m_directionX = m_directionY = 1;
 		m_velocity = 23;
+		
+	    m_name = name;
+		m_LoadCharacter(file);
 	}
 	virtual int m_SetX(int x) {m_characterDescription.x = x;}
 	virtual int m_SetY(int y) {m_characterDescription.x = y;}
@@ -56,13 +62,8 @@ public:
 
 class Dot : public GameCharacter {
 public:
-	Dot(const char *file, int width, int height) : GameCharacter() {
-		m_name = "dot";
-		m_LoadCharacter(file);
-		m_characterDescription.w = width;
-		m_characterDescription.h = height;
-		m_characterDescription.x = width;
-		m_characterDescription.y = height;
+	Dot(const char *file, int width, int height)
+	    : GameCharacter(file, "dot", width, height, width, height) {
 	}
 	void m_Move() {
 		m_characterDescription.x += m_velocity * m_directionX;
@@ -73,13 +74,8 @@ public:
 
 class Paddle : public GameCharacter {
 public:
-	Paddle(const char *file, int width, int height) : GameCharacter() {
-		m_name = "paddle";
-		m_LoadCharacter(file);
-		m_characterDescription.w = width;
-		m_characterDescription.h = height;
-		m_characterDescription.x = SCREEN_WIDTH/2 - width/2;
-		m_characterDescription.y = SCREEN_HEIGHT - height;
+	Paddle(const char *file, int width, int height)
+	    : GameCharacter(file, "paddle", width, height, SCREEN_WIDTH/2 - width/2, SCREEN_HEIGHT - height) {
 	}
 	void m_Move() {
 		if (event.type == SDL_KEYDOWN) {
