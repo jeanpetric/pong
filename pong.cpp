@@ -50,13 +50,13 @@ protected:
   SDL_Texture *m_character;
   SDL_Rect m_characterDescription;
   void m_LoadCharacter(const char *file) {
-	  m_character = IMG_LoadTexture(renderer, file);
+    m_character = IMG_LoadTexture(renderer, file);
   }
 public:
   GameCharacter() {
-	  m_characterDescription.x = m_characterDescription.y = 0;
-	  m_directionX = m_directionY = 1;
-	  m_velocity = 23;
+    m_characterDescription.x = m_characterDescription.y = 0;
+    m_directionX = m_directionY = 1;
+    m_velocity = 23;
   }
   virtual int m_SetX(int x) {m_characterDescription.x = x;}
   virtual int m_SetY(int y) {m_characterDescription.x = y;}
@@ -73,38 +73,38 @@ public:
 class Dot : public GameCharacter {
 public:
   Dot(const char *file, int width, int height) : GameCharacter() {
-	  m_name = "dot";
-	  m_LoadCharacter(file);
-	  m_characterDescription.w = width;
-	  m_characterDescription.h = height;
-	  m_characterDescription.x = width;
-	  m_characterDescription.y = height;
+    m_name = "dot";
+    m_LoadCharacter(file);
+    m_characterDescription.w = width;
+    m_characterDescription.h = height;
+    m_characterDescription.x = width;
+    m_characterDescription.y = height;
   }
   void m_Move() {
-	  m_characterDescription.x += m_velocity * m_directionX;
-	  m_characterDescription.y += m_velocity * m_directionY;
-	  SDL_RenderCopy(renderer, m_character, 0, &m_characterDescription);
+    m_characterDescription.x += m_velocity * m_directionX;
+    m_characterDescription.y += m_velocity * m_directionY;
+    SDL_RenderCopy(renderer, m_character, 0, &m_characterDescription);
   }
 };
 
 class Paddle : public GameCharacter {
 public:
   Paddle(const char *file, int width, int height) : GameCharacter() {
-	  m_name = "paddle";
-	  m_LoadCharacter(file);
-	  m_characterDescription.w = width;
-	  m_characterDescription.h = height;
-	  m_characterDescription.x = SCREEN_WIDTH/2 - width/2;
-	  m_characterDescription.y = SCREEN_HEIGHT - height;
+    m_name = "paddle";
+    m_LoadCharacter(file);
+    m_characterDescription.w = width;
+    m_characterDescription.h = height;
+    m_characterDescription.x = SCREEN_WIDTH/2 - width/2;
+    m_characterDescription.y = SCREEN_HEIGHT - height;
   }
   void m_Move() {
-	  if (event.type == SDL_KEYDOWN) {
-		  switch (event.key.keysym.sym) {
-			  case SDLK_RIGHT: m_characterDescription.x += m_velocity; break;
-			  case SDLK_LEFT: m_characterDescription.x -= m_velocity; break;
-		  }
-	  }
-	  SDL_RenderCopy(renderer, m_character, 0, &m_characterDescription);
+    if (event.type == SDL_KEYDOWN) {
+      switch (event.key.keysym.sym) {
+        case SDLK_RIGHT: m_characterDescription.x += m_velocity; break;
+        case SDLK_LEFT: m_characterDescription.x -= m_velocity; break;
+      }
+    }
+    SDL_RenderCopy(renderer, m_character, 0, &m_characterDescription);
   }
 };
 
@@ -114,16 +114,16 @@ void OutOfScreen(GameCharacter &character) {
   int w = character.m_GetWidth();
   int h = character.m_GetHeight();
   if (x < 0 || (x+w) > SCREEN_WIDTH) {
-	  character.m_ChangeDirectionX();
-	  // don't let the paddle to escape from the screen
-	  if (x < 0) character.m_SetX(0);
-	  else character.m_SetX(SCREEN_WIDTH-w);
+    character.m_ChangeDirectionX();
+    // don't let the paddle to escape from the screen
+    if (x < 0) character.m_SetX(0);
+    else character.m_SetX(SCREEN_WIDTH-w);
   }
   if (y < 0 || (y+w) > SCREEN_HEIGHT) {
-	  character.m_ChangeDirectionY();
+    character.m_ChangeDirectionY();
   }
   if ((y+w) > SCREEN_HEIGHT && character.m_GetName() == "dot") {
-	  exit(-1);
+    exit(-1);
   }
 }
 
@@ -137,7 +137,7 @@ void CollisionDetection(GameCharacter &dot, GameCharacter &paddle) {
   int c2w = paddle.m_GetWidth();
   int c2h = paddle.m_GetHeight();
   if (c1y+c1h > SCREEN_HEIGHT-c2h && (c1x > c2x-c2w && c1x < c2x+c2w) ) {
-	  dot.m_ChangeDirectionY();
+    dot.m_ChangeDirectionY();
   }
 }
 
@@ -152,24 +152,24 @@ int main(int argc, char *argv[])
 
   while (!quit)
   {
-	  while(SDL_PollEvent(&event) != 0)
-	  {
-		  if (event.type == SDL_QUIT) {
-			  quit = true;
-		  }
-	  }
-	  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	  SDL_RenderClear(renderer);
+    while(SDL_PollEvent(&event) != 0)
+    {
+      if (event.type == SDL_QUIT) {
+        quit = true;
+      }
+    }
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
 
-	  dot->m_Move();
-	  paddle->m_Move();
-	  OutOfScreen(*dot);
-	  OutOfScreen(*paddle);
-	  CollisionDetection(*dot, *paddle);
+    dot->m_Move();
+    paddle->m_Move();
+    OutOfScreen(*dot);
+    OutOfScreen(*paddle);
+    CollisionDetection(*dot, *paddle);
 
-	  SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer);
 
-	  SDL_Delay(100);
+    SDL_Delay(100);
   }
 
   Close();
